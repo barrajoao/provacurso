@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Elétrica - Curso de Eletricista</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonte Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-amber-400 selection:text-slate-950">
+
+  <!-- Cabeçalho Fixo -->
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-30">
+    <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+      <button onclick="irParaInicio()" class="flex items-center gap-3 text-left group focus:outline-none">
+        <div class="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg shadow-amber-400/20 group-hover:scale-105 transition-transform">
+          <!-- Ícone Raio SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white leading-tight">
+            Quiz <span class="text-amber-400">Elétrica</span>
+          </h1>
+          <p class="text-xs text-slate-400 font-medium">Curso de Eletricista • Simulados</p>
+        </div>
+      </button>
+
+      <button id="btn-voltar-topo" onclick="irParaInicio()" class="hidden text-xs sm:text-sm font-semibold px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors">
+        ← Aulas
+      </button>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-4 py-6 sm:py-8">
+
+    <!-- TELA 1: SELEÇÃO DE AULAS -->
+    <section id="tela-inicio" class="space-y-6">
+      <div class="bg-gradient-to-br from-slate-900 to-slate-800/80 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-semibold mb-3">
+          <span>⚡</span> Treino Prático da Turma
+        </div>
+        <h2 class="text-xl sm:text-2xl font-bold text-white mb-2">
+          Escolha uma aula para testar seus conhecimentos
+        </h2>
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+          Responda às questões de múltipla escolha, veja a explicação na hora e compartilhe sua pontuação no grupo da turma.
+        </p>
+      </div>
+
+      <!-- Lista de Cards das Aulas -->
+      <div id="lista-aulas" class="grid grid-cols-1 gap-4">
+        <!-- Preenchido via JavaScript -->
+      </div>
+    </section>
+
+    <!-- TELA 2: QUIZ INTERATIVO -->
+    <section id="tela-quiz" class="hidden space-y-5">
+      <!-- Cabeçalho da Aula + Progresso -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3">
+        <div class="flex items-center justify-between gap-2 text-xs sm:text-sm">
+          <span id="quiz-titulo-aula" class="font-semibold text-amber-400 truncate">Aula 1</span>
+          <span id="quiz-contador" class="font-bold text-slate-300 shrink-0 bg-slate-800 px-2.5 py-1 rounded-lg">
+            Questão 1 de 10
+          </span>
+        </div>
+        <!-- Barra de Progresso -->
+        <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+          <div id="barra-progresso" class="h-full bg-amber-400 rounded-full transition-all duration-300" style="width: 10%;"></div>
+        </div>
+      </div>
+
+      <!-- Cartão da Pergunta -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl space-y-5">
+        <h3 id="texto-pergunta" class="text-lg sm:text-xl font-bold text-white leading-snug">
+          Carregando pergunta...
+        </h3>
+
+        <!-- Opções A, B, C, D -->
+        <div id="container-opcoes" class="space-y-3">
+          <!-- Botões inseridos via JS -->
+        </div>
+
+        <!-- Feedback e Explicação Didática -->
+        <div id="caixa-feedback" class="hidden rounded-xl p-4 border text-sm sm:text-base space-y-2 transition-all">
+          <div id="feedback-titulo" class="font-bold flex items-center gap-2"></div>
+          <p id="feedback-explicacao" class="text-slate-200 leading-relaxed text-sm"></p>
+        </div>
+
+        <!-- Botão Próxima Pergunta -->
+        <div id="area-proxima" class="hidden pt-2 flex justify-end">
+          <button id="btn-proxima" onclick="proximaPergunta()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-[0.99] text-slate-950 font-bold text-sm sm:text-base shadow-lg shadow-amber-400/20 transition-all cursor-pointer">
+            Próxima Pergunta →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TELA 3: RESULTADO FINAL -->
+    <section id="tela-resultado" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 text-center shadow-xl space-y-6">
+        <div id="resultado-icone" class="w-16 h-16 mx-auto rounded-2xl bg-amber-400/15 border border-amber-400/30 text-amber-400 flex items-center justify-center text-3xl">
+          🏆
+        </div>
+
+        <div class="space-y-1">
+          <p id="resultado-aula-nome" class="text-xs sm:text-sm font-semibold text-amber-400 uppercase tracking-wider">
+            Aula Concluída
+          </p>
+          <h2 id="resultado-mensagem" class="text-2xl sm:text-3xl font-extrabold text-white">
+            Mandou muito bem!
+          </h2>
+        </div>
+
+        <!-- Placar Detalhado -->
+        <div class="grid grid-cols-3 gap-3 max-w-md mx-auto">
+          <div class="bg-emerald-950/60 border border-emerald-700/50 rounded-xl p-3 sm:p-4">
+            <div id="res-acertos" class="text-2xl sm:text-3xl font-extrabold text-emerald-400">0</div>
+            <div class="text-xs text-emerald-200 font-medium mt-1">Acertos</div>
+          </div>
+          <div class="bg-rose-950/60 border border-rose-700/50 rounded-xl p-3 sm:p-4">
+            <div id="res-erros" class="text-2xl sm:text-3xl font-extrabold text-rose-400">0</div>
+            <div class="text-xs text-rose-200 font-medium mt-1">Erros</div>
+          </div>
+          <div class="bg-slate-800/90 border border-slate-700 rounded-xl p-3 sm:p-4">
+            <div id="res-porcentagem" class="text-2xl sm:text-3xl font-extrabold text-amber-400">0%</div>
+            <div class="text-xs text-slate-300 font-medium mt-1">Aproveit.</div>
+          </div>
+        </div>
+
+        <!-- Botão Copiar para WhatsApp -->
+        <div class="pt-2 space-y-3 max-w-md mx-auto">
+          <button onclick="copiarParaWhatsApp()" class="w-full py-3.5 px-5 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.99] text-slate-950 font-bold text-sm sm:text-base shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span>📲</span> Copiar Resultado para o WhatsApp
+          </button>
+
+          <!-- Mensagem visual de confirmação de cópia -->
+          <div id="aviso-copiado" class="hidden text-xs font-semibold text-emerald-300 bg-emerald-950/80 border border-emerald-700/60 rounded-lg py-2 px-3">
+            ✅ Resultado copiado! Agora é só colar no grupo da turma.
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <button onclick="refazerAula()" class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm border border-slate-700 transition-colors cursor-pointer">
+              🔄 Refazer esta Aula
+            </button>
+            <button onclick="irParaInicio()" class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition-colors cursor-pointer">
+              📚 Voltar para as Aulas
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="border-t border-slate-900 py-5 text-center text-xs text-slate-500 px-4">
+    Quiz Elétrica • Material de apoio para estudantes do Curso de Eletricista
+  </footer>
+
+  <script>
+    /**
+     * ============================================================================
+     * BANCO DE DADOS DAS AULAS
+     * Para adicionar uma nova aula no futuro, basta copiar o bloco de um objeto
+     * dentro de `AULAS`, colar logo abaixo separado por vírgula e editar os textos!
+     * ============================================================================
+     */
+    const AULAS = [
+      {
+        id: "aula-1",
+        numero: "Aula 01",
+        titulo: "Potências em Corrente Alternada (Ativa, Reativa e Aparente)",
+        descricao: "Lei de Ohm, curto-circuito, potência ativa (W), reativa (VAr), aparente (VA), analogia do chopp, fator de potência e banco de capacitores.",
+        perguntas: [
+          {
+            pergunta: "O que acontece na prática quando fechamos um circuito elétrico sem nenhuma carga (resistência limitadora) no caminho?",
+            opcoes: [
+              "A corrente cai a zero automaticamente por segurança.",
+              "Ocorre um curto-circuito, com corrente muito elevada que atua nas proteções.",
+              "A tensão alternada se transforma em corrente contínua.",
+              "O circuito passa a consumir apenas potência reativa."
+            ],
+            correta: 1,
+            explicacao: "Sem uma carga para limitar a passagem da eletricidade, ocorre um curto-circuito: a corrente dispara para valores muito altos e desarma os dispositivos de proteção."
+          },
+          {
+            pergunta: "De acordo com a Lei de Ohm vista em aula, o que acontece com a corrente elétrica quando aumentamos a resistência do circuito (mantendo a tensão)?",
+            opcoes: [
+              "A corrente aumenta na mesma proporção.",
+              "A corrente não sofre nenhuma alteração.",
+              "A corrente diminui, pois são inversamente proporcionais.",
+              "A corrente passa a ser medida em ohms."
+            ],
+            correta: 2,
+            explicacao: "Corrente e resistência são inversamente proporcionais: quanto maior a resistência (como em isolantes e botas de segurança), menor será a corrente que circula."
+          },
+          {
+            pergunta: "Qual das três potências em corrente alternada é realmente convertida em trabalho útil, como iluminação, aquecimento ou movimento mecânico?",
+            opcoes: [
+              "Potência Ativa, medida em Watts (W).",
+              "Potência Reativa, medida em VAr.",
+              "Potência Aparente, medida em VA.",
+              "Potência de Curto-Circuito."
+            ],
+            correta: 0,
+            explicacao: "A Potência Ativa (W) é a parcela da energia que efetivamente realiza trabalho útil no dia a dia: acender lâmpadas, aquecer resistências ou girar eixos."
+          },
+          {
+            pergunta: "Qual é a unidade de medida correta da Potência Reativa em corrente alternada?",
+            opcoes: [
+              "Watt (W)",
+              "Volt-Ampère (VA)",
+              "Ohm (Ω)",
+              "Volt-Ampère Reativo (VAr)"
+            ],
+            correta: 3,
+            explicacao: "A Potência Reativa é medida em Volt-Ampère Reativo (VAr), enquanto a Ativa é em Watts (W) e a Aparente em Volt-Ampère (VA)."
+          },
+          {
+            pergunta: "Por que a potência reativa é indispensável para o funcionamento de motores elétricos, transformadores e relés?",
+            opcoes: [
+              "Porque ela substitui a tensão da concessionária.",
+              "Porque forma e sustenta os campos eletromagnéticos necessários para o funcionamento.",
+              "Porque elimina completamente o aquecimento dos cabos.",
+              "Porque serve apenas para cargas puramente resistivas como o chuveiro."
+            ],
+            correta: 1,
+            explicacao: "Equipamentos com bobinas precisam criar campos eletromagnéticos (por exemplo, para um motor vencer a inércia e partir), e quem sustenta esses campos é a potência reativa."
+          },
+          {
+            pergunta: "Na analogia do 'copo de chopp' explicada pelo professor, o que representam o copo inteiro, o líquido e a espuma, respectivamente?",
+            opcoes: [
+              "Copo = Ativa | Líquido = Reativa | Espuma = Aparente.",
+              "Copo = Reativa | Líquido = Aparente | Espuma = Ativa.",
+              "Copo = Aparente | Líquido = Ativa | Espuma = Reativa.",
+              "Copo = Tensão | Líquido = Resistência | Espuma = Corrente."
+            ],
+            correta: 2,
+            explicacao: "O copo inteiro é a Potência Aparente (pacote total), o líquido é a Potência Ativa (o que mata a sede / gera trabalho útil) e a espuma é a Potência Reativa (vem junto no processo)."
+          },
+          {
+            pergunta: "Na hora de iniciar o dimensionamento das cargas de uma instalação, qual potência representa o 'pacote total' fornecido pela concessionária?",
+            opcoes: [
+              "Potência Aparente (VA).",
+              "Potência Térmica.",
+              "Apenas a Potência Reativa (VAr).",
+              "Potência Mecânica no eixo."
+            ],
+            correta: 0,
+            explicacao: "A Potência Aparente (VA) combina os efeitos da potência ativa e da reativa, representando a potência global entregue ao sistema."
+          },
+          {
+            pergunta: "Para onde vai a parcela de energia que não se transforma em trabalho útil nos equipamentos da instalação?",
+            opcoes: [
+              "Desaparece sem deixar nenhum efeito no circuito.",
+              "Volta automaticamente para a bateria do multímetro.",
+              "Fica no sistema e acaba dissipada principalmente em forma de calor.",
+              "Transforma-se em isolamento elétrico nos fios."
+            ],
+            correta: 2,
+            explicacao: "Na física a energia não some: o que não vira trabalho útil acaba se dissipando no sistema, gerando aquecimento (calor) em motores e transformadores."
+          },
+          {
+            pergunta: "Na placa de um motor elétrico aparece o fator de potência (cos φ) igual a 0,70. O que esse número indica na prática?",
+            opcoes: [
+              "Que o motor trabalha apenas em 70 Volts.",
+              "Que cerca de 70% da potência aparente vira trabalho útil e 30% está ligada à parcela reativa/perdas.",
+              "Que o motor tem 70 anos de garantia.",
+              "Que 100% da energia vira movimento sem nenhuma perda."
+            ],
+            correta: 1,
+            explicacao: "O fator de potência indica o aproveitamento: 0,70 significa que 70% da energia que entra é convertida em trabalho útil e os outros 30% correspondem à parcela reativa/perdas."
+          },
+          {
+            pergunta: "Qual equipamento é instalado em paralelo nas indústrias para corrigir o baixo fator de potência causado pelo excesso de motores (cargas indutivas)?",
+            opcoes: [
+              "Banco de capacitores.",
+              "Chuveiro elétrico em série.",
+              "Disjuntor monopolar de 10 A.",
+              "Transformador elevador de tensão."
+            ],
+            correta: 0,
+            explicacao: "O banco de capacitores ligado em paralelo compensa o efeito indutivo dos motores, elevando o fator de potência para valores adequados (como 0,92) e evitando multas."
+          }
+        ]
+      }
+    ];
+
+    /**
+     * ============================================================================
+     * LÓGICA DO APLICATIVO (Não precisa alterar para adicionar novas aulas)
+     * ============================================================================
+     */
+    let aulaAtual = null;
+    let indicePergunta = 0;
+    let acertos = 0;
+    let erros = 0;
+    let respondeuAtual = false;
+
+    const letras = ["A", "B", "C", "D"];
+
+    // Inicializa a tela de aulas ao carregar
+    window.onload = function () {
+      renderizarListaAulas();
+    };
+
+    function renderizarListaAulas() {
+      const container = document.getElementById("lista-aulas");
+      container.innerHTML = "";
+
+      AULAS.forEach((aula) => {
+        const card = document.createElement("div");
+        card.className = "bg-slate-900 hover:bg-slate-800/90 border border-slate-800 hover:border-amber-400/50 rounded-2xl p-5 sm:p-6 transition-all shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4";
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-md bg-amber-400/15 text-amber-400 text-xs font-bold border border-amber-400/30">
+                ${aula.numero}
+              </span>
+              <span class="text-xs text-slate-400 font-medium">
+                ${aula.perguntas.length} questões
+              </span>
+            </div>
+            <h3 class="text-lg font-bold text-white leading-snug">${aula.titulo}</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">${aula.descricao}</p>
+          </div>
+          <button onclick="iniciarAula('${aula.id}')" class="shrink-0 w-full sm:w-auto px-5 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-[0.98] text-slate-950 font-bold text-sm shadow-md shadow-amber-400/10 transition-all cursor-pointer">
+            Iniciar Quiz →
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function mostrarTela(nomeTela) {
+      document.getElementById("tela-inicio").classList.add("hidden");
+      document.getElementById("tela-quiz").classList.add("hidden");
+      document.getElementById("tela-resultado").classList.add("hidden");
+
+      document.getElementById(`tela-${nomeTela}`).classList.remove("hidden");
+
+      const btnVoltar = document.getElementById("btn-voltar-topo");
+      if (nomeTela === "inicio") {
+        btnVoltar.classList.add("hidden");
+      } else {
+        btnVoltar.classList.remove("hidden");
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function irParaInicio() {
+      mostrarTela("inicio");
+    }
+
+    function iniciarAula(aulaId) {
+      aulaAtual = AULAS.find((a) => a.id === aulaId);
+      if (!aulaAtual) return;
+
+      indicePergunta = 0;
+      acertos = 0;
+      erros = 0;
+      respondeuAtual = false;
+
+      document.getElementById("quiz-titulo-aula").textContent = `${aulaAtual.numero}: ${aulaAtual.titulo}`;
+      mostrarTela("quiz");
+      carregarPergunta();
+    }
+
+    function refazerAula() {
+      if (aulaAtual) {
+        iniciarAula(aulaAtual.id);
+      }
+    }
+
+    function carregarPergunta() {
+      respondeuAtual = false;
+      const total = aulaAtual.perguntas.length;
+      const q = aulaAtual.perguntas[indicePergunta];
+
+      // Atualiza contador e barra de progresso
+      document.getElementById("quiz-contador").textContent = `Questão ${indicePergunta + 1} de ${total}`;
+      const percentualProgresso = ((indicePergunta + 1) / total) * 100;
+      document.getElementById("barra-progresso").style.width = `${percentualProgresso}%`;
+
+      // Atualiza texto da pergunta
+      document.getElementById("texto-pergunta").textContent = q.pergunta;
+
+      // Esconde feedback e botão próxima
+      const caixaFeedback = document.getElementById("caixa-feedback");
+      caixaFeedback.classList.add("hidden");
+      document.getElementById("area-proxima").classList.add("hidden");
+
+      // Muda texto do botão na última pergunta
+      const btnProxima = document.getElementById("btn-proxima");
+      btnProxima.textContent = indicePergunta === total - 1 ? "Ver Resultado Final 🏆" : "Próxima Pergunta →";
+
+      // Renderiza opções
+      const containerOpcoes = document.getElementById("container-opcoes");
+      containerOpcoes.innerHTML = "";
+
+      q.opcoes.forEach((textoOpcao, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.id = `opcao-${idx}`;
+        btn.onclick = () => selecionarOpcao(idx);
+        btn.className = "w-full text-left p-4 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 hover:border-amber-400/60 transition-all flex items-start gap-3.5 group cursor-pointer";
+
+        btn.innerHTML = `
+          <span id="badge-${idx}" class="w-8 h-8 rounded-lg bg-slate-900 border border-slate-700 group-hover:border-amber-400/60 text-amber-400 font-bold text-sm flex items-center justify-center shrink-0 mt-0.5 transition-colors">
+            ${letras[idx]}
+          </span>
+          <span class="text-sm sm:text-base text-slate-100 leading-snug pt-1">${textoOpcao}</span>
+        `;
+        containerOpcoes.appendChild(btn);
+      });
+    }
+
+    function selecionarOpcao(indiceEscolhido) {
+      if (respondeuAtual) return;
+      respondeuAtual = true;
+
+      const q = aulaAtual.perguntas[indicePergunta];
+      const acertou = indiceEscolhido === q.correta;
+
+      if (acertou) {
+        acertos++;
+      } else {
+        erros++;
+      }
+
+      // Estiliza todas as opções após a resposta
+      q.opcoes.forEach((_, idx) => {
+        const btn = document.getElementById(`opcao-${idx}`);
+        const badge = document.getElementById(`badge-${idx}`);
+        btn.disabled = true;
+        btn.classList.remove("cursor-pointer", "hover:bg-slate-800", "hover:border-amber-400/60");
+
+        if (idx === q.correta) {
+          // Destaca a correta em verde
+          btn.className = "w-full text-left p-4 rounded-xl bg-emerald-950/70 border-2 border-emerald-500 flex items-start gap-3.5 transition-all";
+          badge.className = "w-8 h-8 rounded-lg bg-emerald-500 text-slate-950 font-extrabold text-sm flex items-center justify-center shrink-0 mt-0.5";
+          badge.textContent = "✓";
+        } else if (idx === indiceEscolhido && !acertou) {
+          // Destaca a errada escolhida em vermelho
+          btn.className = "w-full text-left p-4 rounded-xl bg-rose-950/70 border-2 border-rose-500 flex items-start gap-3.5 transition-all";
+          badge.className = "w-8 h-8 rounded-lg bg-rose-500 text-white font-extrabold text-sm flex items-center justify-center shrink-0 mt-0.5";
+          badge.textContent = "✕";
+        } else {
+          // Apaga levemente as demais
+          btn.className = "w-full text-left p-4 rounded-xl bg-slate-900/50 border border-slate-800 opacity-55 flex items-start gap-3.5";
+        }
+      });
+
+      // Mostra caixa de explicação didática
+      const caixaFeedback = document.getElementById("caixa-feedback");
+      const feedbackTitulo = document.getElementById("feedback-titulo");
+      const feedbackExplicacao = document.getElementById("feedback-explicacao");
+
+      caixaFeedback.classList.remove("hidden");
+      if (acertou) {
+        caixaFeedback.className = "rounded-xl p-4 border border-emerald-500/50 bg-emerald-950/40 text-sm sm:text-base space-y-1.5";
+        feedbackTitulo.className = "font-bold text-emerald-400 flex items-center gap-2";
+        feedbackTitulo.innerHTML = `<span>✅</span> Resposta Correta!`;
+      } else {
+        caixaFeedback.className = "rounded-xl p-4 border border-rose-500/50 bg-rose-950/40 text-sm sm:text-base space-y-1.5";
+        feedbackTitulo.className = "font-bold text-rose-400 flex items-center gap-2";
+        feedbackTitulo.innerHTML = `<span>❌</span> Ops! A resposta certa é a letra ${letras[q.correta]}.`;
+      }
+
+      feedbackExplicacao.textContent = q.explicacao;
+
+      // Exibe botão de avançar
+      document.getElementById("area-proxima").classList.remove("hidden");
+    }
+
+    function proximaPergunta() {
+      if (indicePergunta < aulaAtual.perguntas.length - 1) {
+        indicePergunta++;
+        carregarPergunta();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        exibirResultado();
+      }
+    }
+
+    function exibirResultado() {
+      const total = aulaAtual.perguntas.length;
+      const porcentagem = Math.round((acertos / total) * 100);
+
+      document.getElementById("resultado-aula-nome").textContent = `${aulaAtual.numero} • ${aulaAtual.titulo}`;
+      document.getElementById("res-acertos").textContent = acertos;
+      document.getElementById("res-erros").textContent = erros;
+      document.getElementById("res-porcentagem").textContent = `${porcentagem}%`;
+
+      const icone = document.getElementById("resultado-icone");
+      const msg = document.getElementById("resultado-mensagem");
+
+      if (porcentagem >= 80) {
+        icone.textContent = "🏆";
+        msg.textContent = "Excelente! Você dominou a matéria!";
+      } else if (porcentagem >= 50) {
+        icone.textContent = "⚡";
+        msg.textContent = "Bom trabalho! Continue revisando!";
+      } else {
+        icone.textContent = "📘";
+        msg.textContent = "Vale a pena revisar a aula e tentar de novo!";
+      }
+
+      document.getElementById("aviso-copiado").classList.add("hidden");
+      mostrarTela("resultado");
+    }
+
+    function copiarParaWhatsApp() {
+      const total = aulaAtual.perguntas.length;
+      const porcentagem = Math.round((acertos / total) * 100);
+      const texto = `⚡ *Quiz Elétrica - Curso de Eletricista*\nAcertei *${acertos}/${total} (${porcentagem}%)* na *${aulaAtual.numero}: ${aulaAtual.titulo}*!`;
+
+      // Usa textarea oculto + execCommand('copy') para garantir compatibilidade em iframes e celulares
+      const tempInput = document.createElement("textarea");
+      tempInput.value = texto;
+      tempInput.style.position = "fixed";
+      tempInput.style.opacity = "0";
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      tempInput.setSelectionRange(0, 99999);
+
+      try {
+        document.execCommand("copy");
+        document.getElementById("aviso-copiado").classList.remove("hidden");
+      } catch (err) {
+        console.error("Erro ao copiar texto:", err);
+      }
+
+      document.body.removeChild(tempInput);
+    }
+  </script>
+</body>
+</html>
